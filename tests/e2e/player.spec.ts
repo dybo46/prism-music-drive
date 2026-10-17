@@ -133,12 +133,19 @@ test('corrupt source skips finitely, unsupported format rejects, mono and empty 
 test('mode resource disposal is stable through 28 switches', async ({ page }) => {
   await page.goto('/');
   await add(page, [fixture('long.wav', 30)]);
+  // Compare identical song state; different journey geometry is not a resource leak.
+  await page.waitForFunction(() => !!(window as any).motionSound.analysis.map);
+  await page.evaluate(() => {
+    const m = (window as any).motionSound;
+    m.engine.pause();
+    m.engine.audio.currentTime = 2;
+  });
   const counts: { geometries: number; textures: number }[] = [];
   for (let i = 0; i < 28; i++) {
     const id = ['road', 'rain', 'bloom', 'transit'][i % 4];
     await page.locator(`[data-scene=${id}]`).click();
     await expect(page.locator(`[data-scene=${id}]`)).toHaveAttribute('aria-pressed', 'true');
-    await page.waitForTimeout(70);
+    await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
     counts.push(
       await page.evaluate(() => ({ ...(window as any).motionSound.renderer.info.memory })),
     );
