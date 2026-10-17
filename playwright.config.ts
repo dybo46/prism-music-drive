@@ -7,6 +7,8 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:5173',
     channel: process.env.CI ? undefined : 'chrome',
     headless: true,
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
     viewport: { width: 1920, height: 1080 },
     launchOptions: {
       args: ['--autoplay-policy=no-user-gesture-required', '--enable-unsafe-swiftshader'],
