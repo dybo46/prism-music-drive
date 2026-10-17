@@ -31,10 +31,16 @@ test('wide view, focus, fixed stars, click participation, coasting and record tr
   await page.locator('#focus-exit').click();
   await expect(page.locator('.topbar')).toBeVisible();
   await expect(page.locator('#scene-sidebar')).toBeVisible();
+  // Capture the transient pulse in the input event, before software rendering can decay it.
+  await page.evaluate(() => {
+    document.addEventListener('pointerdown', () => {
+      (window as any).__inputPulse = (window as any).motionSound.scene.manualPulse;
+    }, { once: true });
+  });
   await page.locator('#world').click({ position: { x: 600, y: 180 } });
   const pulse = await page.evaluate(() => {
     const s = (window as any).motionSound.scene;
-    return s.manualPulse;
+    return (window as any).__inputPulse;
   });
   expect(pulse).toBeGreaterThan(0.3);
   const sky = await page.evaluate(() => {
