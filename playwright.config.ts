@@ -7,6 +7,8 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:5173',
     channel: process.env.CI ? undefined : 'chrome',
     headless: true,
+    // Hosted CI has software WebGL: preserve CSS layout, reduce render pixels only.
+    deviceScaleFactor: process.env.CI ? 0.25 : 1,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     viewport: { width: 1920, height: 1080 },
