@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.tools/
+test-results/
+playwright-report/
+.DS_Store
+artifacts/
+.pnpm-store/
+*.wav
+*.mp3
+!tests/fixtures/original-tagged.mp3
+
+.local/
